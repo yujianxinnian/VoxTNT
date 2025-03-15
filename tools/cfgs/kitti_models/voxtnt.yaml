@@ -2,7 +2,15 @@ CLASS_NAMES: ['Car', 'Pedestrian', 'Cyclist']
 
 DATA_CONFIG: 
     _BASE_CONFIG_: cfgs/dataset_configs/kitti_dataset.yaml
-    POINT_CLOUD_RANGE:  [0, -39.6, -3, 69.12, 39.6, 1] #[0, -39.68, -3, 69.12, 39.68, 1] #[0, -40, -3, 70.4, 40, 1] #  [0, -40.08, -3, 70.56, 40.08, 1] #[0, -40, -3, 70.4, 40, 1] # [0, -39.68, -3, 69.12, 39.68, 1] # [0, -39.6, -3, 69.12, 39.6, 1] #[0, -39.84, -3, 69.12, 39.84, 1] #
+    POINT_CLOUD_RANGE: [0, -39.68, -3, 69.12, 39.68, 1] 
+    DATA_SPLIT: {
+        'train': train,
+        'test': test #val test
+    }
+    INFO_PATH: {
+        'train': [kitti_infos_train.pkl],
+        'test': [kitti_infos_test.pkl], #[kitti_infos_val.pkl],[kitti_infos_test.pkl]
+    }
     DATA_PROCESSOR:
         - NAME: mask_points_and_boxes_outside_range
           REMOVE_OUTSIDE_BOXES: True
@@ -14,8 +22,8 @@ DATA_CONFIG:
           }
 
         - NAME: transform_points_to_voxels
-          VOXEL_SIZE: [0.18, 0.18, 4] # [0.24, 0.24, 4] #[0.16, 0.16, 4] # [0.48, 0.48, 4] #
-          MAX_POINTS_PER_VOXEL: 42
+          VOXEL_SIZE: [0.32, 0.32, 4]  #[0.16, 0.16, 4] #[0.48, 0.48, 4] #
+          MAX_POINTS_PER_VOXEL: 144 #42 #50 #96
           MAX_NUMBER_OF_VOXELS: {
             'train': 16000,
             'test': 40000
@@ -51,11 +59,10 @@ MODEL:
     NAME: PointPillar
 
     VFE:
-        NAME: VoxtGNN
+        NAME: VoxTNT
         INPUT_DIM: 16
-        NUM_LATENTS: [8, 8, 8, 8]  #[16, 16, 16, 16] #[8, 8, 8, 8]
-        K_GNN: 5
-        GNN_LAYERS: 3
+        NUM_LATENTS: [16, 16, 16, 16] #[8, 8, 8, 8] # #
+        NUM_LATENTS_2: [16, 16, 16, 16]  #[8, 8, 8, 8]  #[16, 16, 16, 16]
         OUTPUT_DIM: 128
 
     POINT_HEAD:
@@ -144,7 +151,7 @@ MODEL:
 
     POST_PROCESSING:
         RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
-        SCORE_THRESH: 0.1 #0.1
+        SCORE_THRESH: 0.1
         OUTPUT_RAW_SCORE: False
 
         EVAL_METRIC: kitti
@@ -152,7 +159,7 @@ MODEL:
         NMS_CONFIG:
             MULTI_CLASSES_NMS: False
             NMS_TYPE: nms_gpu
-            NMS_THRESH: 0.01 #0.01
+            NMS_THRESH: 0.01
             NMS_PRE_MAXSIZE: 4096
             NMS_POST_MAXSIZE: 500
 
@@ -162,7 +169,7 @@ OPTIMIZATION:
     NUM_EPOCHS: 100
 
     OPTIMIZER: adam_onecycle
-    LR: 0.0015 #0.003 #0.0015
+    LR: 0.0015
     WEIGHT_DECAY: 0.01
     MOMENTUM: 0.9
 

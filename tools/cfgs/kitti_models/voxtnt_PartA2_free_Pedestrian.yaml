@@ -22,7 +22,7 @@ DATA_CONFIG:
 
     - NAME: transform_points_to_voxels
       VOXEL_SIZE: [0.05, 0.05, 0.1] #[0.05, 0.05, 0.1] 
-      MAX_POINTS_PER_VOXEL: 5 #20 # 64
+      MAX_POINTS_PER_VOXEL: 8 #5 #8 #20 # 64
       MAX_NUMBER_OF_VOXELS: {
         'train': 16000,
         'test': 40000
@@ -33,12 +33,11 @@ MODEL:
     NAME: PointRCNN
 
     VFE:
-        NAME: VoxtGNN_Two_Stage
+        NAME: VoxTNT_TWO_STAGE
         INPUT_DIM: 16
-        NUM_LATENTS: [8, 8, 8, 8] #[16, 16, 16, 16] #[8, 8, 8, 8]
-        K_GNN: 6
-        GNN_LAYERS: 3 #1
-        OUTPUT_DIM: 128 #128 #256
+        NUM_LATENTS: [16, 16, 16, 16] # [8, 8, 8, 8] #[16, 16, 16, 16] #[8, 8, 8, 8] # #
+        NUM_LATENTS_2: [8, 8, 8, 8]   #[8, 8, 8, 8]  #[16, 16, 16, 16]
+        OUTPUT_DIM: 128
 
     BACKBONE_3D:
         NAME: UNetV2
@@ -94,7 +93,7 @@ MODEL:
                 NMS_TYPE: nms_gpu
                 MULTI_CLASSES_NMS: False
                 NMS_PRE_MAXSIZE: 9000
-                NMS_POST_MAXSIZE: 100
+                NMS_POST_MAXSIZE: 128 # 默认100
                 NMS_THRESH: 0.85
 
         ROI_AWARE_POOL:
@@ -130,7 +129,7 @@ MODEL:
 
     POST_PROCESSING:
         RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
-        SCORE_THRESH: 0.1
+        SCORE_THRESH: 0.08 #默认0.1
         OUTPUT_RAW_SCORE: False
 
         EVAL_METRIC: kitti
