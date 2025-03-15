@@ -92,7 +92,7 @@ Due to the voxel based method, each sampling point is random, so the results may
 
 ```shell
 
-cd VoxT-GNN/tools
+cd VoxTNT/tools
 python train.py --cfg_file cfgs/kitti_models/voxt_gnn.yaml
 
 
@@ -101,7 +101,7 @@ python train.py --cfg_file cfgs/kitti_models/voxt_gnn.yaml
 ### 6. Test with a pretrained model
 
 ```shell
-cd VoxT-GNN/tools
+cd VoxTNT/tools
 python test.py --cfg_file --cfg_file ./cfgs/kitti_models/voxt_gnn.yaml --ckpt ${CKPT_FILE}
 ```
 ### 7. Acknowledgement
